@@ -1,0 +1,23 @@
+{
+  "name": "jobpilot",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Parallel, token-cheap job-application system: PostgreSQL + Obsidian vault + FastAPI backend + React dashboard + BrowserOS Neo agent.",
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev:frontend": "pnpm --filter @jobpilot/frontend dev",
+    "build:frontend": "pnpm --filter @jobpilot/frontend build",
+    "typecheck:frontend": "pnpm --filter @jobpilot/frontend typecheck",
+    "start": "docker compose up -d",
+    "stop": "docker compose stop",
+    "restart": "pnpm build:frontend && docker compose up -d --force-recreate server worker control beat",
+    "status": "docker compose ps",
+    "logs": "docker compose logs -f --tail 100",
+    "restart:all": "pnpm build:frontend && docker compose down && docker compose up -d",
+    "backup": "docker compose run --rm backup now",
+    "backup:list": "docker compose run --rm backup list"
+  }
+}

@@ -1,0 +1,5 @@
+packages:
+  - frontend
+allowBuilds:
+  '@scarf/scarf': false  # Swagger's install telemetry is unnecessary.
+  esbuild: true

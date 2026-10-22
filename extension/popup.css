@@ -1,0 +1,12 @@
+:root { color-scheme: light dark; --ok: #3f6236; --info: #3b6b78; --warn: #9b5a1a; --bad: #b84337; }
+body { margin: 0; width: 300px; font: 14px/1.4 system-ui, sans-serif; }
+main { padding: 18px 16px; text-align: center; }
+#icon { width: 44px; height: 44px; margin: 0 auto 8px; border-radius: 50%; display: grid; place-items: center;
+        font-size: 24px; color: #fff; background: #777; }
+#icon.ok { background: var(--ok); } #icon.info { background: var(--info); }
+#icon.warn { background: var(--warn); } #icon.bad { background: var(--bad); }
+h1 { font-size: 16px; margin: 0 0 4px; }
+p { margin: 0 0 12px; opacity: 0.75; overflow-wrap: anywhere; }
+button { font: inherit; padding: 6px 12px; border-radius: 8px; border: 1px solid #8884; background: transparent;
+         color: inherit; cursor: pointer; margin: 2px; }
+button.primary { background: #46503f; color: #fff; border-color: #46503f; }

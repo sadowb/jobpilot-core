@@ -1,0 +1,330 @@
+{
+ "data": {
+  "jobPosting": {
+   "id": "0c4dc4f4-01c9-4138-a666-e7234cda7e95",
+   "title": "Fab Software Engineering Intern - Winter",
+   "departmentName": "Internships & Co-ops",
+   "locationName": "Austin",
+   "workplaceType": "OnSite",
+   "employmentType": "Intern",
+   "descriptionHtml": "<p style=\"min-height:1.5em\"><strong>About fab2</strong></p><p style=\"min-height:1.5em\">The fab2 team can build anything. We design all the hardware and software needed to make chips and we make the fabs, tools, and components ourselves.<br /><br />We're looking for exceptional, hands-on people who can iterate to the limits of what's possible.</p><div style=\"min-height:1.2em;margin-top:0;margin-bottom:0\">\u00a0</div><p style=\"min-height:1.5em\">fab2 was founded by <a target=\"_blank\" rel=\"noopener noref",
+   "compensationTierSummary": "$114K \u2013 $131K \u2022 +Housing Stipend",
+   "scrapeableCompensationSalarySummary": "$114K - $131K",
+   "secondaryLocationNames": [
+    "San Francisco Office"
+   ],
+   "applicationDeadline": null,
+   "isListed": true,
+   "applicationForm": {
+    "sections": [
+     {
+      "title": null,
+      "descriptionHtml": null,
+      "fieldEntries": [
+       {
+        "isRequired": true,
+        "field": {
+         "id": "79ce31fb-0d75-460f-b321-24124a695e99",
+         "path": "_systemfield_name",
+         "humanReadablePath": "Name",
+         "title": "Name",
+         "isNullable": false,
+         "isPrivate": false,
+         "isDeactivated": false,
+         "isMany": false,
+         "metadata": {},
+         "type": "String",
+         "__autoSerializationID": "StringField"
+        },
+        "descriptionHtml": null
+       },
+       {
+        "isRequired": true,
+        "field": {
+         "id": "fea9bab2-91c7-432e-8c6d-36e2d40653d5",
+         "path": "_systemfield_email",
+         "humanReadablePath": "Email",
+         "title": "Email",
+         "isNullable": false,
+         "isPrivate": false,
+         "isDeactivated": false,
+         "isMany": false,
+         "metadata": {},
+         "type": "Email",
+         "__autoSerializationID": "EmailField"
+        },
+        "descriptionHtml": null
+       },
+       {
+        "isRequired": true,
+        "field": {
+         "id": "a4127fa8-a56e-4de4-8619-040127a38166",
+         "path": "_systemfield_resume",
+         "humanReadablePath": "Resume",
+         "title": "Resume",
+         "isNullable": false,
+         "isPrivate": false,
+         "isDeactivated": false,
+         "isMany": false,
+         "metadata": {},
+         "type": "File",
+         "__autoSerializationID": "FileField"
+        },
+        "descriptionHtml": null
+       },
+       {
+        "isRequired": false,
+        "field": {
+         "id": "7ecd17bd-9c8a-4ed9-aac8-2d56ac264e90",
+         "path": "7ecd17bd-9c8a-4ed9-aac8-2d56ac264e90",
+         "humanReadablePath": "",
+         "title": "Portfolio - File upload",
+         "isNullable": false,
+         "isPrivate": false,
+         "isDeactivated": false,
+         "isMany": false,
+         "metadata": {},
+         "type": "File",
+         "__autoSerializationID": "FileField"
+        },
+        "descriptionHtml": "<p><strong>Required - </strong>Please upload a file AND/OR add a website link below to your portfolio. Any format is fine - youtube video, word doc, personal website. A portfolio submission is required for this role and part of the evaluation process.</p>"
+       },
+       {
+        "isRequired": false,
+        "field": {
+         "id": "2937c460-28b7-4ff0-997d-a53c2596d106",
+         "path": "2937c460-28b7-4ff0-997d-a53c2596d106",
+         "humanReadablePath": "",
+         "title": "Portfolio - website link",
+         "isNullable": false,
+         "isPrivate": false,
+         "isDeactivated": false,
+         "isMany": false,
+         "metadata": {},
+         "type": "String",
+         "__autoSerializationID": "StringField"
+        },
+        "descriptionHtml": "<p><strong>Required - </strong>Please add a website link AND/OR upload a file above to your portfolio. Any format is fine - youtube video, word doc, personal website. A portfolio submission is required for this role and part of the evaluation process.</p>"
+       },
+       {
+        "isRequired": true,
+        "field": {
+         "id": "d70dd6d6-2abc-4c9b-b22e-4e891e58faba",
+         "path": "20b1fe29-f13c-4a60-a71b-36e8b116d434",
+         "humanReadablePath": "",
+         "title": "Have you included a portfolio with your application?",
+         "isNullable": false,
+         "isPrivate": false,
+         "isDeactivated": false,
+         "isMany": false,
+         "metadata": {},
+         "type": "Boolean",
+         "__autoSerializationID": "BooleanField"
+        },
+        "descriptionHtml": null
+       },
+       {
+        "isRequired": true,
+        "field": {
+         "id": "3f4a9a3e-beb7-4723-9e1f-a062bec5e2f9",
+         "path": "_systemfield_location",
+         "humanReadablePath": "Location",
+         "title": "Location",
+         "isNullable": false,
+         "isPrivate": false,
+         "isDeactivated": false,
+         "isMany": false,
+         "metadata": {},
+         "type": "Location",
+         "locationTypes": [
+          "Country",
+          "Region",
+          "City"
+         ],
+         "__autoSerializationID": "LocationField"
+        },
+        "descriptionHtml": null
+       },
+       {
+        "isRequired": false,
+        "field": {
+         "id": "f0a83e07-389a-4ccf-a19a-c6ef8149a192",
+         "path": "f0a83e07-389a-4ccf-a19a-c6ef8149a192",
+         "humanReadablePath": "",
+         "title": "Tell us a bit about yourself and why you'd like to join fab2",
+         "isNullable": false,
+         "isPrivate": false,
+         "isDeactivated": false,
+         "isMany": false,
+         "metadata": {},
+         "type": "LongText",
+         "__autoSerializationID": "LongTextField"
+        },
+        "descriptionHtml": null
+       },
+       {
+        "isRequired": true,
+        "field": {
+         "id": "22b03aca-299c-40aa-b03d-cc2e67a9433b",
+         "path": "22b03aca-299c-40aa-b03d-cc2e67a9433b",
+         "humanReadablePath": "",
+         "title": "Ideal start date in office",
+         "isNullable": false,
+         "isPrivate": false,
+         "isDeactivated": false,
+         "isMany": false,
+         "metadata": {},
+         "type": "Date",
+         "__autoSerializationID": "DateField"
+        },
+        "descriptionHtml": "<p>This is an in-office position.</p>"
+       },
+       {
+        "isRequired": true,
+        "field": {
+         "id": "22b03aca-299c-40aa-b03d-cc2e67a9433b",
+         "path": "80772cf0-b983-4ea8-ae21-d29900c0bb2c",
+         "humanReadablePath": "",
+         "title": "Ideal end date",
+         "isNullable": false,
+         "isPrivate": false,
+         "isDeactivated": false,
+         "isMany": false,
+         "metadata": {},
+         "type": "Date",
+         "__autoSerializationID": "DateField"
+        },
+        "descriptionHtml": "<p>This is an in-office position in San Francisco, CA.</p>"
+       },
+       {
+        "isRequired": true,
+        "field": {
+         "id": "512cf860-a3bf-44c9-b03a-2b151ada5e3f",
+         "path": "512cf860-a3bf-44c9-b03a-2b151ada5e3f",
+         "humanReadablePath": "",
+         "title": "Are you currently authorized to work in the United States?",
+         "isNullable": false,
+         "isPrivate": false,
+         "isDeactivated": false,
+         "isMany": false,
+         "metadata": {},
+         "type": "Boolean",
+         "__autoSerializationID": "BooleanField"
+        },
+        "descriptionHtml": null
+       },
+       {
+        "isRequired": true,
+        "field": {
+         "id": "fe58bde4-8fd5-4525-9437-0d0d9f608001",
+         "path": "fe58bde4-8fd5-4525-9437-0d0d9f608001",
+         "humanReadablePath": "",
+         "title": "Will you, at any point, require employer sponsorship to work in the United States?",
+         "isNullable": false,
+         "isPrivate": false,
+         "isDeactivated": false,
+         "isMany": false,
+         "metadata": {},
+         "type": "Boolean",
+         "__autoSerializationID": "BooleanField"
+        },
+        "descriptionHtml": null
+       },
+       {
+        "isRequired": true,
+        "field": {
+         "id": "5ea6b5f2-85e9-4cae-b1ba-872f85da6c59",
+         "path": "5ea6b5f2-85e9-4cae-b1ba-872f85da6c59",
+         "humanReadablePath": "",
+         "title": "How did you hear about us?",
+         "isNullable": false,
+         "isPrivate": false,
+         "isDeactivated": false,
+         "isMany": false,
+         "metadata": {},
+         "type": "ValueSelect",
+         "selectableValues": [
+          {
+           "label": "Twitter",
+           "value": "Twitter"
+          },
+          {
+           "label": "LinkedIn",
+           "value": "LinkedIn"
+          },
+          {
+           "label": "Sam's Youtube",
+           "value": "Sam's Youtube"
+          },
+          {
+           "label": "Google Search",
+           "value": "Google Search"
+          },
+          {
+           "label": "Indeed or other search engine",
+           "value": "Indeed or other search engine"
+          },
+          {
+           "label": "Word of mouth",
+           "value": "Word of mouth"
+          },
+          {
+           "label": "Referral",
+           "value": "Referral"
+          },
+          {
+           "label": "Other",
+           "value": "Other"
+          }
+         ],
+         "__autoSerializationID": "ValueSelectField"
+        },
+        "descriptionHtml": null
+       }
+      ]
+     },
+     {
+      "title": "U.S. Export Control Questions",
+      "descriptionHtml": "<p><em>The company is asking these questions for export control purposes only in order to comply with applicable U.S. export control regulations, including the Export Administration Regulations (EAR). Any offer of employment is contingent upon our obtaining any export license or other approval that may be required by the U.S. Government.</em></p>",
+      "fieldEntries": [
+       {
+        "isRequired": true,
+        "field": {
+         "id": "256d62ab-3e92-4800-a26e-d2c3260123ac",
+         "path": "256d62ab-3e92-4800-a26e-d2c3260123ac",
+         "humanReadablePath": "",
+         "title": "I am one of the following: (a) a citizen of the United States; (b) a lawful permanent resident of the United States; or (c) a person admitted into the United States as an asylee or refugee:",
+         "isNullable": false,
+         "isPrivate": false,
+         "isDeactivated": false,
+         "isMany": false,
+         "metadata": {},
+         "type": "Boolean",
+         "__autoSerializationID": "BooleanField"
+        },
+        "descriptionHtml": null
+       },
+       {
+        "isRequired": true,
+        "field": {
+         "id": "a0bcdb1c-b371-4edd-8b78-4837da16de65",
+         "path": "a0bcdb1c-b371-4edd-8b78-4837da16de65",
+         "humanReadablePath": "",
+         "title": "If no, is your home country listed below?",
+         "isNullable": false,
+         "isPrivate": false,
+         "isDeactivated": false,
+         "isMany": false,
+         "metadata": {},
+         "type": "Boolean",
+         "__autoSerializationID": "BooleanField"
+        },
+        "descriptionHtml": "<p>Armenia, Azerbaijan, Belarus, Burma, Cambodia, China, Cuba, Georgia, Iran, Iraq,\u00a0</p><p>Kazakhstan, North Korea, Kyrgyzstan, Laos, Libya, Macao, Moldova, Mongolia,\u00a0</p><p>Nicaragua, Russia, Syria, Tajikistan, Turkmenistan, Uzbekistan, Venezuela, Vietnam, Yemen</p>"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ }
+}

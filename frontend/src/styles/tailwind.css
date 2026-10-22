@@ -1,0 +1,143 @@
+@import '@fontsource-variable/inter/standard.css';
+@import 'tailwindcss';
+
+@theme {
+  --color-neutral-50: #fbfaf7;
+  --color-neutral-100: #f6f4f0;
+  --color-neutral-200: #e4e0d6;
+  --color-neutral-300: #cdc9b5;
+  --color-neutral-400: #c7b8a6;
+  --color-neutral-500: #948f81;
+  --color-neutral-600: #62655f;
+  --color-neutral-700: #46503f;
+  --color-neutral-800: #262d25;
+  --color-neutral-900: #151a15;
+  --color-neutral-950: #121612;
+
+  --color-paper: #f6f4f0;
+  --color-sage: #bbc4b3;
+  --color-stone: #cdc9b5;
+  --color-clay: #c7b8a6;
+  --color-secondary: #62655f;
+
+  --color-ground: #f6f4f0;
+  --color-surface: #ffffff;
+  --color-raised: #f4f1ea;
+  --color-sidebar: #f4f1eb;
+  --color-line: #e4e0d6;
+  --color-control: #cdc9b5;
+  --color-ink: #151a15;
+  --color-muted: #736e62;
+
+  --color-accent: #46503f;
+  --color-accent-hover: #373f32;
+  --color-accent-ink: #ffffff;
+  --color-accent-soft: #eff2ec;
+  --color-accent-line: #bbc4b3;
+
+  --color-ok: #3f6236;
+  --color-ok-soft: #eff4ed;
+  --color-warn: #9b5a1a;
+  --color-warn-soft: #faf3eb;
+  --color-danger: #b84337;
+  --color-danger-hover: #a0382d;
+  --color-danger-soft: #fdf2f0;
+  --color-info: #3b6b78;
+  --color-info-soft: #f0f4f6;
+
+  --radius-card: 16px;
+  --radius-control: 10px;
+
+  --font-serif: ui-serif, 'New York', 'Iowan Old Style', Georgia, serif;
+  --font-sans:
+    'Inter Variable', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui,
+    sans-serif;
+  --font-mono: 'SF Mono', ui-monospace, Menlo, Monaco, Consolas, monospace;
+
+  --shadow-card: 0 1px 2px 0 rgb(21 26 21 / 0.03), 0 1px 1px -1px rgb(21 26 21 / 0.02);
+  --shadow-control: 0 1px 2px 0 rgb(21 26 21 / 0.03);
+  --shadow-floating: 0 12px 32px -4px rgb(21 26 21 / 0.1), 0 4px 12px -2px rgb(21 26 21 / 0.04);
+
+  --animate-working: working 1.8s ease-in-out infinite;
+  --animate-appear: appear 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  @keyframes working {
+    0%,
+    100% {
+      opacity: 0.35;
+      transform: scaleX(0.96);
+    }
+    50% {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+  }
+  @keyframes appear {
+    from {
+      opacity: 0;
+      transform: translateY(6px) scale(0.995);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Dark theme (cf. darkmodedesign.com): near-black ground, surfaces separated by hairline borders rather than heavy
+   fills, restrained colour, and a light-sage accent so links, focus rings and primary buttons keep contrast. */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-paper: #0a0b0a;
+  --color-sage: #8a9982;
+  --color-stone: #9c9781;
+  --color-clay: #968673;
+  --color-secondary: #bdbab0;
+
+  --color-ground: #0a0b0a;
+  --color-surface: #111311;
+  --color-raised: #181b18;
+  --color-sidebar: #0a0b0a;
+  --color-line: #232723;
+  --color-control: #363c35;
+  --color-ink: #f2f0ea;
+  --color-muted: #9b988e;
+
+  --color-accent: #a9c0a0;
+  --color-accent-hover: #bcd1b4;
+  --color-accent-ink: #0b0f0a;
+  --color-accent-soft: #182217;
+  --color-accent-line: #34452f;
+
+  --color-ok: #8dbf84;
+  --color-ok-soft: rgb(141 191 132 / 0.12);
+  --color-warn: #d9a85b;
+  --color-warn-soft: rgb(217 168 91 / 0.12);
+  --color-danger: #e0786c;
+  --color-danger-hover: #ea8d82;
+  --color-danger-soft: rgb(224 120 108 / 0.12);
+  --color-info: #7fb0c2;
+  --color-info-soft: rgb(127 176 194 / 0.12);
+
+  --shadow-card: 0 0 0 0 transparent;
+  --shadow-control: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-floating: 0 24px 48px -12px rgb(0 0 0 / 0.8), 0 0 0 1px rgb(255 255 255 / 0.06);
+}
+
+body {
+  background-color: var(--color-ground);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+@layer base {
+  html {
+    font-size: 14px;
+  }
+}

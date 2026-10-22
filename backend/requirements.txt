@@ -1,0 +1,2 @@
+# Dependabot/pip entry point; CI syncs the exact version snapshot directly.
+-r requirements.lock

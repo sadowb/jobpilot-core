@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+if [ -f "$ROOT/.env" ]; then set -a; . "$ROOT/.env"; set +a; fi
+export JOBPILOT_HOME="${JOBPILOT_HOME:-$ROOT}"
+export PATH="$ROOT/bin:$PATH"
+exec "$ROOT/backend/.venv/bin/celery" -A jobpilot.worker.app beat \
+  -s "$ROOT/data/celerybeat-schedule" --pidfile= -l INFO "$@"

@@ -1,0 +1,41 @@
+{
+  "name": "@jobpilot/frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build && node scripts/copy-api-docs.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "gen:api": "PYTHONDONTWRITEBYTECODE=1 ../backend/.venv/bin/python ../backend/scripts/export_openapi.py openapi.json && openapi-typescript openapi.json -o src/api/types.ts",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src",
+    "check:links": "node scripts/check-links.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "5.2.8",
+    "@tanstack/react-query": "^5.59.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.460.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.18.4",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "openapi-typescript": "^7.13.0",
+    "prettier": "^3.9.10",
+    "swagger-ui-dist": "^5.33.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.71.1",
+    "vite": "^6.4.4"
+  }
+}

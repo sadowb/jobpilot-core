@@ -1,0 +1,31 @@
+node_modules/
+dist/
+.turbo/
+*.log
+.DS_Store
+
+# Personal data and runtime state never enter the code repo
+data/*
+!data/.gitkeep
+.env
+.env.*
+!.env.example
+
+# Secrets / browser state
+*cookie*
+*browser-state*
+*.pem
+*.key
+.venv/
+__pycache__/
+*.egg-info/
+.ruff_cache/
+.mypy_cache/
+.pnpm-store/
+.archify/
+
+# Browser profiles, CVs and tool state from side projects (lite/) and editors
+**/chrome-profile/
+lite/**/data/
+.pytest_cache/
+.obsidian/

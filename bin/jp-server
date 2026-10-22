@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Start the FastAPI backend on 127.0.0.1 (loopback only).
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+if [ -f "$ROOT/.env" ]; then set -a; . "$ROOT/.env"; set +a; fi
+exec "$ROOT/backend/.venv/bin/python" -m jobpilot.server "$@"

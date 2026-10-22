@@ -1,0 +1,17 @@
+{
+  "jobPostingInfo": {
+    "id": "abc123",
+    "title": "Senior Software Engineer",
+    "jobDescription": "<p>Build <b>things</b>.</p><ul><li>Python</li><li>SQL</li></ul>",
+    "location": "Remote, Canada",
+    "additionalLocations": ["Toronto, Canada", "Montreal, Canada"],
+    "remoteType": "Remote",
+    "timeType": "Full time",
+    "startDate": "2026-10-01",
+    "jobReqId": "R-12345",
+    "externalUrl": "https://acme.wd5.myworkdayjobs.com/en-US/Careers/job/Remote-Canada/Senior-Software-Engineer_R-12345",
+    "includeResumeParsing": true,
+    "questionnaireId": "q-1"
+  },
+  "hiringOrganization": {"name": "Acme Corp"}
+}

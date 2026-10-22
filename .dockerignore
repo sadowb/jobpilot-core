@@ -1,0 +1,11 @@
+.git
+**/node_modules
+**/.venv
+**/__pycache__
+frontend/dist
+data
+.env
+.env.*
+!.env.example
+lite
+*.log

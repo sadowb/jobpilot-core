@@ -1,0 +1,77 @@
+name: CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 6 * * 1'
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v9
+        with:
+          version: '0.11.2'
+          python-version: '3.12'
+      - name: Install locked Python environment
+        working-directory: backend
+        run: |
+          uv venv
+          uv pip sync requirements-dev.lock
+          uv pip install --no-deps -e .
+          uv pip check
+      - name: Ruff, format, strict mypy
+        working-directory: backend
+        run: |
+          .venv/bin/ruff check src scripts tests
+          .venv/bin/ruff format --check src scripts tests
+          .venv/bin/mypy src scripts tests
+      - name: API versioning and authentication tests
+        working-directory: backend
+        run: .venv/bin/python -m unittest discover -s tests -v
+      - name: Audit locked Python dependencies
+        working-directory: backend
+        run: |
+          uvx pip-audit==2.10.0 --disable-pip --no-deps -r requirements.lock
+          uvx pip-audit==2.10.0 --disable-pip --no-deps -r requirements-dev.lock
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - name: Install the repository's pnpm version
+        run: npm install --global "$(node -p 'require("./package.json").packageManager')"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @jobpilot/frontend lint
+      - run: pnpm --filter @jobpilot/frontend format:check
+      - run: pnpm typecheck:frontend
+      - run: pnpm build:frontend
+      - run: pnpm audit --audit-level=low
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Install verified Gitleaks release
+        env:
+          VERSION: '8.30.1'
+        run: |
+          archive="gitleaks_${VERSION}_linux_x64.tar.gz"
+          base="https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}"
+          curl --fail --location --retry 3 "$base/$archive" -o "$RUNNER_TEMP/$archive"
+          curl --fail --location --retry 3 "$base/gitleaks_${VERSION}_checksums.txt" -o "$RUNNER_TEMP/checksums.txt"
+          (cd "$RUNNER_TEMP" && rg "  ${archive}$" checksums.txt | sha256sum --check -)
+          tar -xzf "$RUNNER_TEMP/$archive" -C "$RUNNER_TEMP" gitleaks
+      - name: Scan history and checked-out files (redacted)
+        run: |
+          "$RUNNER_TEMP/gitleaks" git --redact --log-opts=--all .
+          "$RUNNER_TEMP/gitleaks" dir --redact .

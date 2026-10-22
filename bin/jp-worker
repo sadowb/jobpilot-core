@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Job execution worker. Run jp-migrate first; UI Start enables dispatch.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+if [ -f "$ROOT/.env" ]; then set -a; . "$ROOT/.env"; set +a; fi
+export JOBPILOT_HOME="${JOBPILOT_HOME:-$ROOT}"
+export PATH="$ROOT/bin:$PATH"
+export JOBPILOT_WORKER_ROLE=jobs
+export JOBPILOT_NODE="${JOBPILOT_NODE:-mac}"
+export WORKER_CONCURRENCY="${WORKER_CONCURRENCY:-4}"
+export JOBPILOT_POOL="${JOBPILOT_POOL:-prefork}"
+NODE="$JOBPILOT_NODE"
+SLOTS="$WORKER_CONCURRENCY"
+POOL="$JOBPILOT_POOL"
+ARGS=(worker -Q "jobs,node.$NODE" -P "$POOL" -c "$SLOTS" -n "jobs-$NODE@%h"
+  --without-gossip --without-mingle --without-heartbeat -l INFO)
+if [ "$POOL" = prefork ]; then ARGS+=(--max-tasks-per-child 50); fi
+exec "$ROOT/backend/.venv/bin/celery" -A jobpilot.worker.app "${ARGS[@]}" "$@"

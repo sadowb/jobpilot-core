@@ -1,0 +1,15 @@
+# ADR 0008: worker failure signals, maintenance and pacing identity
+
+Status: accepted implementation of batch 5 findings, 2026-10-10. Supersedes ADR 0006's unknown-output reservation and workspace-specific plist details.
+
+Page/model result prose cannot determine whether the application pool is usable. ClaudeDriver emits a typed failure from exit status, JSON is_error/subtype/api_error_status and stderr. Structured per-run budget/turn exhaustion remains a job failure even if the process exits nonzero. Invalid/no-JSON output on a successful process exit is also a job failure, without an independent environment signal. Diagnostics contain no raw Claude stdout/stderr. Generic exceptions no longer disable automation based on text matches.
+
+The Claude browser child uses an environment allowlist: HOME, a constructed tool PATH, LANG and JP_ROLE/JP_JOB/JP_WORKER. The existing absolute-path Bash(jp) tool policy remains the operational containment barrier; the environment role is only a CLI guard. The toolbox loads its configuration inside its own subprocess. No inherited DSN, password or arbitrary application variable reaches Claude. This is not an OS sandbox against a compromised local account or tool binary.
+
+Both API and standalone worker run the same maintenance loop, with the worker's thread supervised alongside the claim pool even when automation is disabled. Slow IO does not interrupt supervisor heartbeats. Projection/browser per-job advisory locks already serialize and recheck work. CV sweeps add a global session advisory lock before reading queue rows; generation-conditional acknowledgement preserves newly queued work. Existing projection git serialization remains in place.
+
+`jobs.pacing_hostname` is computed by the pure Python URL hostname normalizer at ingestion. Both admission and browser commands use that stored key. Forward migration 0007 adds the column; its Python hook backfills jobs, conservatively merges old pacing keys and removes the transitional default, atomically with migration bookkeeping. Run `bin/jp-migrate`, not just the SQL file. The synthetic DB fixture also invokes the hook. Job URLs have no mutation path other than ingestion; any future URL edit must update this key too.
+
+Every returned/failed model call attempts final settlement. Reported usage already settles under the shared advisory transaction lock. Missing usage is converted once to a cost-ledger estimate of the reserved allowance and marked settled under that lock. This preserves conservative admission totals instead of freeing potentially spent funds. A process kill or unavailable DB still leaves an open reservation until UTC rollover. No new schema is needed for settlement.
+
+The worker launchd installer renders a portable plist using plistlib to handle path characters safely. Backup age encryption is optional; plaintext fallback remains private and FileVault-dependent. An actual encryption error aborts without plaintext publication. SECURITY.md documents that fallback and the intentional user-confirmed placeholder hash; neither changes automated submit gates.

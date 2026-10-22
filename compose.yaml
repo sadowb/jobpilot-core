@@ -1,0 +1,164 @@
+# JobPilot as a Compose stack: no launchd, no host-specific service manager.
+#   docker compose up -d        postgres, redis, migrate (one-shot), server, worker, control, beat
+#   docker compose --profile build run --rm web-build     build the dashboard into frontend/dist (first run, after UI changes)
+#   docker compose down         stop everything (data stays in the named volume and in ./data)
+#   pnpm backup                 backup service: daily DB dump + vault bundle (ADR 0022)
+# The browser is NOT in here: agents drive the BrowserOS neo browser on the host (NEO_PORT, default 9010).
+# Everything is published on host loopback only.
+
+name: jobpilot
+
+x-app: &app
+  build: { context: ., dockerfile: Dockerfile }
+  image: jobpilot-runtime:local
+  # Same absolute path inside and outside: the host browser reads CV paths the agent receives.
+  working_dir: ${JOBPILOT_HOME:?set JOBPILOT_HOME in .env to the absolute path of this repository}
+  user: "${JP_UID:-1000}:${JP_GID:-1000}"
+  env_file: [.env]
+  environment: &app-env
+    HOME: /tmp/jobpilot-home  # OS fallback only; browser CLI overrides CLAUDE_CONFIG_DIR to persistent data/agent-sessions/<job>
+    JOBPILOT_HOME: ${JOBPILOT_HOME}
+    PYTHONPATH: ${JOBPILOT_HOME}/backend/src
+    PGHOST: postgres
+    PGPORT: "5432"
+    REDIS_HOST: redis
+    REDIS_PORT: "6379"
+    BACKEND_HOST: 0.0.0.0
+    # Neo runs on the host. Inside the container it is reached through a loopback relay (docker/entrypoint.sh) because
+    # Neo only accepts loopback Host headers.
+    NEO_PORT: ${NEO_PORT:-9010}
+    NEO_MCP_URL: http://127.0.0.1:${NEO_PORT:-9010}/mcp
+    CLAUDE_CODE_OAUTH_TOKEN: ${CLAUDE_CODE_OAUTH_TOKEN:-}
+  volumes:
+    - ${JOBPILOT_HOME}:${JOBPILOT_HOME}
+  extra_hosts: ["host.docker.internal:host-gateway"]
+  restart: unless-stopped
+  security_opt: ["no-new-privileges:true"]
+  cap_drop: [ALL]
+
+services:
+  postgres:
+    image: postgres:16-bookworm
+    environment:
+      POSTGRES_DB: ${PGDATABASE:-jobpilot}
+      POSTGRES_USER: ${PGUSER:-jobpilot}
+      POSTGRES_PASSWORD: ${PGPASSWORD:?set PGPASSWORD in .env}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    ports: ["127.0.0.1:${PGPORT:-5433}:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+
+  redis:
+    image: redis:7-bookworm
+    # Broker only (ADR 0012): password, no persistence.
+    command: ["sh", "-c", "exec redis-server --requirepass \"$$REDIS_PASSWORD\" --save '' --appendonly no"]
+    environment: { REDIS_PASSWORD: "${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}" }
+    ports: ["127.0.0.1:${REDIS_PORT:-6380}:6379"]
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" --no-auth-warning ping | grep -q PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+
+  migrate:
+    <<: *app
+    command: ["python", "-m", "jobpilot.migrate"]
+    restart: "no"
+    depends_on: { postgres: { condition: service_healthy } }
+
+  server:
+    <<: *app
+    command: ["python", "-m", "jobpilot.server"]
+    stop_grace_period: 1m  # finish in-flight requests (and any git commit) on SIGTERM instead of being SIGKILLed mid-write
+    ports: ["127.0.0.1:${BACKEND_PORT:-4100}:${BACKEND_PORT:-4100}"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+
+  worker:
+    <<: *app
+    environment:
+      <<: *app-env
+      JOBPILOT_WORKER_ROLE: jobs
+    command:
+      - sh
+      - -c
+      - >-
+        exec celery -A jobpilot.worker.app worker -Q "jobs,node.$${JOBPILOT_NODE:-mac}" -P "$${JOBPILOT_POOL:-prefork}"
+        -c "$${WORKER_CONCURRENCY:-4}" -n "jobs-$${JOBPILOT_NODE:-mac}@%h"
+        --without-gossip --without-mingle --without-heartbeat --max-tasks-per-child 50 -l INFO
+    stop_grace_period: 20m  # let running applications finish (bin/jp-worker's launchd ExitTimeOut equivalent)
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+
+  control:
+    <<: *app
+    environment:
+      <<: *app-env
+      JOBPILOT_WORKER_ROLE: control
+    command:
+      - sh
+      - -c
+      - >-
+        exec celery -A jobpilot.worker.app worker -Q control -P threads -c 4 -n "control-$${JOBPILOT_NODE:-mac}@%h"
+        --without-gossip --without-mingle --without-heartbeat -l INFO
+    # Celery warm shutdown waits for running tasks; the vault git sweep must finish (or git must get SIGTERM and clean
+    # its own index.lock) before Docker's SIGKILL, which is what leaves a stale lock behind.
+    stop_grace_period: 3m
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+
+  beat:
+    <<: *app
+    # The schedule file is a dbm database whose format differs between macOS and Linux: keep the container's own, in /tmp.
+    command: ["sh", "-c", "exec celery -A jobpilot.worker.app beat -s /tmp/celerybeat-schedule --pidfile= -l INFO"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+
+  backup:
+    # Daily pg_dump -Fc + vault tarball into data/backups (owner-only, newest 14 kept). Same postgres major as the database.
+    #   docker compose run --rm backup now | list | verify <bundle> | restore-db <bundle> [dbname] | restore-vault <bundle> <dir>
+    image: postgres:16-bookworm
+    entrypoint: ["/usr/local/bin/backup"]
+    user: "${JP_UID:-1000}:${JP_GID:-1000}"
+    environment:
+      HOME: /tmp
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGUSER: ${PGUSER:-jobpilot}
+      PGDATABASE: ${PGDATABASE:-jobpilot}
+      PGPASSWORD: ${PGPASSWORD:?set PGPASSWORD in .env}
+      JOBPILOT_VAULT: /vault
+      BACKUP_DIR: /backups
+      BACKUP_INTERVAL_HOURS: ${BACKUP_INTERVAL_HOURS:-24}
+      BACKUP_KEEP: ${BACKUP_KEEP:-14}
+    volumes:
+      - ./docker/backup.sh:/usr/local/bin/backup:ro
+      - ${JOBPILOT_VAULT:-${JOBPILOT_HOME}/data/vault}:/vault:ro
+      - ${JOBPILOT_HOME}/data/backups:/backups
+    depends_on: { postgres: { condition: service_healthy } }
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+
+  web-build:
+    profiles: ["build"]
+    image: node:22-bookworm-slim
+    working_dir: ${JOBPILOT_HOME}
+    user: "${JP_UID:-1000}:${JP_GID:-1000}"
+    environment: { HOME: /tmp, COREPACK_HOME: /tmp/corepack, CI: "true" }
+    volumes: ["${JOBPILOT_HOME}:${JOBPILOT_HOME}"]
+    command: ["sh", "-c", "corepack enable && pnpm install --frozen-lockfile && pnpm build:frontend"]
+
+volumes:
+  pgdata:
