@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@v9
+      - uses: astral-sh/setup-uv@v9.0.0
         with:
           version: '0.11.2'
           python-version: '3.12'
@@ -69,7 +69,7 @@ jobs:
           base="https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}"
           curl --fail --location --retry 3 "$base/$archive" -o "$RUNNER_TEMP/$archive"
           curl --fail --location --retry 3 "$base/gitleaks_${VERSION}_checksums.txt" -o "$RUNNER_TEMP/checksums.txt"
-          (cd "$RUNNER_TEMP" && rg "  ${archive}$" checksums.txt | sha256sum --check -)
+          (cd "$RUNNER_TEMP" && grep -F "  ${archive}" checksums.txt | sha256sum --check -)
           tar -xzf "$RUNNER_TEMP/$archive" -C "$RUNNER_TEMP" gitleaks
       - name: Scan history and checked-out files (redacted)
         run: |
