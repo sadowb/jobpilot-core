@@ -1,0 +1,7 @@
+# Public CAPTCHA site keys inside scraped job-board HTML fixtures (public by design, not secrets).
+95228cc5ccf0ed0dd934cd36e8b32560ec64ef38:backend/tests/fixtures/posting_forms/careerplug_form.html:generic-api-key:227
+95228cc5ccf0ed0dd934cd36e8b32560ec64ef38:backend/tests/fixtures/posting_forms/jazzhr_form.html:generic-api-key:313
+95228cc5ccf0ed0dd934cd36e8b32560ec64ef38:backend/tests/fixtures/posting_forms/lever_form.html:generic-api-key:3
+backend/tests/fixtures/posting_forms/careerplug_form.html:generic-api-key:227
+backend/tests/fixtures/posting_forms/jazzhr_form.html:generic-api-key:313
+backend/tests/fixtures/posting_forms/lever_form.html:generic-api-key:3
